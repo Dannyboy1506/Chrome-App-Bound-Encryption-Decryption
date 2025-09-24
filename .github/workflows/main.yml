@@ -25,11 +25,11 @@ jobs:
         shell: cmd
         run: |
           if "${{ github.event.inputs.build_type }}" == "encryptor_only" (
-            call build.bat build_encryptor_only
+            call make.bat build_encryptor_only
           ) else if "${{ github.event.inputs.build_type }}" == "target_only" (
-            call build.bat build_target_only
+            call make.bat build_target_only
           ) else (
-            call build.bat
+            call make.bat
           )
 
       - name: Upload Final Executable
