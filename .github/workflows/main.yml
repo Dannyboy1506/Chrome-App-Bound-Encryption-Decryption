@@ -1,0 +1,39 @@
+name: Build x64 Executable
+
+on:
+  workflow_dispatch: # Allows manual trigger
+    inputs:
+      build_type:
+        description: 'Build Type (full, encryptor_only, target_only)'
+        required: true
+        default: 'full'
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup MSVC Environment (x64)
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Run Build Script
+        shell: cmd
+        run: |
+          if "${{ github.event.inputs.build_type }}" == "encryptor_only" (
+            call build.bat build_encryptor_only
+          ) else if "${{ github.event.inputs.build_type }}" == "target_only" (
+            call build.bat build_target_only
+          ) else (
+            call build.bat
+          )
+
+      - name: Upload Final Executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: chromelevator-x64
+          path: chromelevator.exe
